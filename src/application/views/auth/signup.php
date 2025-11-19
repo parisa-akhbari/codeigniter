@@ -49,6 +49,7 @@ li { padding-left: 10px; font-size: 18px; display: inline; text-align: left; tex
   padding-right: 37px;
   padding-top: 55px;
   transition: all .5s ease;
+  color: white;
 }
 
 .form-signin { height: 375px; }
@@ -65,9 +66,9 @@ input.form-styling {
   border: none;
   border-radius: 20px;
   margin-bottom: 20px;
-  background: rgba(255,255,255,.2);
+  background: white
   color: #fff;
-  font-size: 13px;
+  font-size: 18px;
 }
 
 input.form-styling:focus {
@@ -78,10 +79,10 @@ input.form-styling:focus {
 label {
   font-weight: 400;
   text-transform: uppercase;
-  font-size: 13px;
+  font-size: 18px;
   padding-left: 15px;
   padding-bottom: 10px;
-  color: rgba(255,255,255,.7);
+  color: white;
   display:block;
 }
 
@@ -91,7 +92,7 @@ button {
   border-radius: 20px;
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 13px;
+  font-size: 18px;
   color: #fff;
   border: none;
   cursor:pointer;
@@ -109,6 +110,17 @@ button {
 
 <div class="container">
   <div class="frame">
+    <?php if (validation_errors()): ?>
+      <div class="error" style="color:red; margin-bottom:15px;">
+        <?php echo validation_errors(); ?>
+      </div>
+    <?php endif; ?>
+
+    <?php if ($this->session->flashdata('signup_success')): ?>
+      <div class="alert alert-success">
+        <?= $this->session->flashdata('signup_success'); ?>
+      </div>
+    <?php endif; ?>
 
     <div class="nav">
       <ul class="links">
@@ -156,22 +168,36 @@ button {
 <script>
 $(function() {
     $(".btn").click(function() {
+        $(".error").remove();
+        $(".success").removeClass("success-left");
+
+        // سوئیچ فرم‌ها با کلیک
         $(".form-signin").toggleClass("form-signin-left");
         $(".form-signup").toggleClass("form-signup-left");
         $(".frame").toggleClass("frame-long");
         $(".signup-inactive").toggleClass("signup-active");
         $(".signin-active").toggleClass("signin-inactive");
     });
+
+    // --- فرم فعال بر اساس PHP ---
+    <?php if (isset($active_form) && $active_form == 'signup') : ?>
+        $(".form-signin").addClass("form-signin-left"); // فرم ورود مخفی
+        $(".form-signup").addClass("form-signup-left"); // فرم ثبت‌نام فعال
+        $(".frame").addClass("frame-long");
+        $(".signup-inactive").addClass("signup-active");
+        $(".signin-active").addClass("signin-inactive");
+    <?php else: ?>
+        // فرم ورود فعال، فرم ثبت‌نام مخفی
+        $(".form-signin").removeClass("form-signin-left");
+        $(".form-signup").removeClass("form-signup-left");
+        $(".frame").removeClass("frame-long");
+        $(".signup-inactive").removeClass("signup-active");
+        $(".signin-active").removeClass("signin-inactive");
+    <?php endif; ?>
 });
 
-$(function() {
-    $(".btn-signup").click(function() {
-        $(".form-signup-left").toggleClass("form-signup-down");
-        $(".success").toggleClass("success-left");
-        $(".frame").toggleClass("frame-short");
-    });
-});
 </script>
+
 
 </body>
 </html>

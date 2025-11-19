@@ -54,3 +54,13 @@ $route['default_controller'] = 'auth/signup';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+
+//$route['default_controller'] = 'transaction';
+$route['transaction'] = 'transaction/index';
+$route['transaction/store'] = 'transaction/store';
+$route['transaction/update/(:num)'] = 'transaction/update/$1';
+$route['transaction/delete/(:num)'] = 'transaction/delete/$1';
+
+
+
