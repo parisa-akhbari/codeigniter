@@ -2,3 +2,4 @@ db/*
 init/*
 
 src/application/sessions
+src/uploads/
