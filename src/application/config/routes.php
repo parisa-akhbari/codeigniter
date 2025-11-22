@@ -57,10 +57,11 @@ $route['translate_uri_dashes'] = FALSE;
 
 
 //$route['default_controller'] = 'transaction';
-$route['transaction'] = 'transaction/index';
-$route['transaction/store'] = 'transaction/store';
-$route['transaction/update/(:num)'] = 'transaction/update/$1';
-$route['transaction/delete/(:num)'] = 'transaction/delete/$1';
+$route['transactionscategorires'] = 'transactionscategories/index';
+$route['transactions'] = 'transactions/index';
+// $route['transaction/store'] = 'transaction/store';
+// $route['transaction/update/(:num)'] = 'transaction/update/$1';
+// $route['transaction/delete/(:num)'] = 'transaction/delete/$1';
 
 
 
