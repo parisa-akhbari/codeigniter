@@ -13,15 +13,15 @@
         <div class="card-body text-end">
             <h2 class="card-title mb-3">دسته بندی تراکنش ها</h2>
 
-            <form class="row g-3 align-items-center mb-3 justify-content-end" method="get" action="">
+            <form class="row g-3 align-items-center mb-3 justify-content-end ajax-link" method="get" action="<?= site_url('transactionscategories') ?>">
                 <div class="col-auto">
                     <input type="text" name="search" value="<?php echo $search; ?>" class="form-control" placeholder="جستجو عنوان">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">جستجو</button>
                 <!-- دکمه پاک کردن -->
-                    <a href="<?php echo site_url('transactionscategories'); ?>" class="btn btn-secondary">پاک کردن</a>
-                    <a href="<?php echo site_url('transactionscategories/add'); ?>" class="btn btn-success">افزودن تراکنش</a>
+                    <a href="<?php echo site_url('transactionscategories'); ?>" class="btn btn-secondary ajax-link">پاک کردن</a>
+                    <a href="<?php echo site_url('transactionscategories/add'); ?>" class="btn btn-success ajax-link">افزودن دسته بندی</a>
                 </div>
             </form>
 
@@ -41,8 +41,8 @@
                                     <td class="text-center"><?php echo $t->id; ?></td>
                                     <td class="text-end"><?php echo $t->title; ?></td>
                                     <td class="text-center">
-                                        <a href="<?php echo site_url('transactionscategories/edit/'.$t->id); ?>" class="btn btn-warning btn-sm me-1">ویرایش</a>
-                                        <a href="<?php echo site_url('transactionscategories/delete/'.$t->id); ?>" class="btn btn-danger btn-sm" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
+                                        <a href="<?php echo site_url('transactionscategories/edit/'.$t->id); ?>" class="btn btn-warning btn-sm me-1 ajax-link">ویرایش</a>
+                                        <a href="<?php echo site_url('transactionscategories/delete/'.$t->id); ?>" class="btn btn-danger btn-sm ajax-link" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

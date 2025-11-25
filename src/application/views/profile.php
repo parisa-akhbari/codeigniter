@@ -122,9 +122,9 @@
                     </div>
 
                     <!-- خروج -->
-                    <div class="text-center">
+                    <!-- <div class="text-center">
                         <a href="<?= site_url('auth/logout'); ?>" class="btn btn-danger">خروج از حساب</a>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>

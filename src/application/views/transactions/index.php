@@ -13,10 +13,10 @@
 
 <div class="container">
     <h2 class="mb-4">تراکنش‌ها</h2>
-    <a href="<?= site_url('transactions/create') ?>" class="btn btn-primary mb-3">افزودن تراکنش جدید</a>
+    <a href="<?= site_url('transactions/create') ?>" class="btn btn-primary mb-3 ajax-link">افزودن تراکنش جدید</a>
 
     <!-- فرم جستجو -->
-    <form method="get" class="mb-4">
+    <form method="GET" class="mb-4 ajax-form" action="<?= site_url('Dashboard/load_page/transactions'); ?>">
     <div class="form-row">
         <div class="col-md-3 mb-2">
             <input type="text" name="title" class="form-control" placeholder="عنوان" value="<?= $filters['title'] ?? '' ?>">
@@ -36,7 +36,7 @@
         </div>
         <div class="col-md-3 mb-2 d-flex">
             <button type="submit" class="btn btn-primary mr-2">جستجو</button>
-            <a href="<?= site_url('transactions') ?>" class="btn btn-secondary">پاک کردن</a>
+            <a href="<?= site_url('transactions') ?>" class="btn btn-secondary ajax-link">پاک کردن</a>
         </div>
     </div>
     </form>
@@ -65,10 +65,10 @@
                         <td><?= $t->category_title ?></td>
                         <td><?= $t->transaction_date ?></td>
                         <td>
-                        <a href="<?= site_url('transactions/edit/'.$t->id) ?>" class="btn btn-sm btn-warning">ویرایش</a>
+                        <a href="<?= site_url('transactions/edit/'.$t->id) ?>" class="btn btn-sm btn-warning ajax-link">ویرایش</a>
                         <a href="<?= site_url('transactions/delete/'.$t->id) ?>" 
                         onclick="return confirm('آیا مطمئن هستید می‌خواهید این تراکنش را حذف کنید؟');" 
-                        class="btn btn-sm btn-danger">حذف</a>
+                        class="btn btn-sm btn-danger ajax-link">حذف</a>
                         </td>
 
                     </tr>
@@ -81,7 +81,9 @@
     </table>
 
     <!-- Pagination -->
-    <?= $pagination ?? '' ?>
+	<div>
+   <?= $pagination ?? '' ?>
+</div>
 </div>
 
 </body>

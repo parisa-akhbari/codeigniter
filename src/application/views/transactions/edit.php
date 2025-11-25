@@ -13,7 +13,7 @@
     <h2 class="mb-4">ویرایش تراکنش</h2>
     <?= validation_errors('<div class="alert alert-danger">', '</div>'); ?>
 
-    <form action="<?= site_url('transactions/edit/'.$transaction->id) ?>" method="post">
+    <form action="<?= site_url('transactions/edit/'.$transaction->id) ?>" method="post" class="ajax-link">
         <div class="form-group">
             <label>عنوان</label>
             <input type="text" name="title" class="form-control" value="<?= set_value('title', $transaction->title) ?>">
@@ -47,7 +47,7 @@
         </div>
 
         <button type="submit" class="btn btn-success">ذخیره تغییرات</button>
-        <a href="<?= site_url('transactions') ?>" class="btn btn-secondary">بازگشت</a>
+        <a href="<?= site_url('transactions') ?>" class="btn btn-secondary ajax-link">بازگشت</a>
     </form>
 </div>
 </body>

@@ -67,7 +67,9 @@ class Profile extends CI_Controller {
             $this->session->set_flashdata('error', $this->upload->display_errors());
         } else {
             $file_data = $this->upload->data();
+			//$image_path = 'uploads/'.$file_data['file_name'];
             $this->User_model->update_user($this->session->userdata('user_id'), ['profile_image' => 'uploads/'.$file_data['file_name']]);
+			//$this->session->set_userdata('profile_image', $image_path);
             $this->session->set_flashdata('message', 'تصویر پروفایل با موفقیت آپلود شد.');
         }
         redirect('profile');

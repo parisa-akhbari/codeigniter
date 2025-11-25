@@ -72,7 +72,7 @@ public function login() {
                 'logged_in' => TRUE
             ];
             $this->session->set_userdata($userdata);
-            redirect('profile');
+            redirect('Dashboard');
         } else {
             $data['login_error'] = "نام کاربری یا رمز عبور اشتباه است.";
             $data['active_form'] = 'login'; // فرم ورود فعال بماند
