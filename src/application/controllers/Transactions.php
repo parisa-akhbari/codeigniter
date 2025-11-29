@@ -16,6 +16,12 @@ class Transactions extends CI_Controller {
     public function index() {
 		$user_id = $this->session->userdata('user_id');
 
+        $this->load->helper("jdf");
+
+        // $now = new Datetime();
+
+        // echo jdate("Y/m/d", $now->getTimestamp(), '', "Asia/Tehran", "en");
+
 		$filters = [
 			'title' => $this->input->get('title'),
 			'type' => $this->input->get('type'),
@@ -67,9 +73,9 @@ class Transactions extends CI_Controller {
 	}
 
 
-
     /** صفحه ایجاد تراکنش جدید */
     public function create() {
+        $this->load->helper("jdf");
         $data['categories'] = $this->categories_model->get_all();
 
         $this->form_validation->set_rules('title', 'عنوان', 'required');
@@ -82,21 +88,44 @@ class Transactions extends CI_Controller {
             return $this->load->view('transactions/create', $data);
         }
 
+        // گرفتن تاریخ شمسی از فرم
+        $persianDatetime = $this->input->post('transaction_date'); // مثال: 1402-09-15 یا 1402/09/15
+
+        // 1. تبدیل اعداد فارسی به انگلیسی (اگر کاربر فارسی وارد کرده باشد)
+        $persianDatetime = strtr($persianDatetime, [
+            '۰'=>'0','۱'=>'1','۲'=>'2','۳'=>'3','۴'=>'4','۵'=>'5','۶'=>'6','۷'=>'7','۸'=>'8','۹'=>'9'
+        ]);
+
+        // 2. جایگزینی / با - اگر لازم باشد
+        $persianDatetime = str_replace('/', '-', $persianDatetime);
+
+        // 3. explode برای گرفتن سال، ماه، روز
+        list($jy, $jm, $jd) = explode('-', $persianDatetime);
+
+        // 4. تبدیل شمسی به میلادی
+        list($gy, $gm, $gd) = jalali_to_gregorian($jy, $jm, $jd);
+        $gregorianDate = sprintf("%04d-%02d-%02d", $gy, $gm, $gd);
+
+        // آماده سازی آرایه برای insert
         $insert_data = [
             'title' => $this->input->post('title'),
             'amount' => $this->input->post('amount'),
             'type' => $this->input->post('type'),
             'category_id' => $this->input->post('category_id'),
-            'transaction_date' => $this->input->post('transaction_date'),
-			'user_id' => $this->session->userdata('user_id')
+            'transaction_date' => $gregorianDate, // اکنون میلادی است
+            'user_id' => $this->session->userdata('user_id')
         ];
+
+        //log_message("debug", "Insert data: " . print_r($insert_data, true));
 
         $this->transactions_model->insert($insert_data);
         redirect('transactions');
-    }
+}
 
     /** صفحه ویرایش تراکنش */
     public function edit($id) {
+        $this->load->helper("jdf");
+
         $data['transaction'] = $this->transactions_model->get_by_id($id);
         if (!$data['transaction']) show_404();
 
@@ -112,17 +141,39 @@ class Transactions extends CI_Controller {
             return $this->load->view('transactions/edit', $data);
         }
 
+        // گرفتن تاریخ شمسی از فرم
+        $persianDatetime = $this->input->post('transaction_date'); // مثال: 1402-09-15 یا 1402/09/15
+
+        // 1. تبدیل اعداد فارسی به انگلیسی
+        $persianDatetime = strtr($persianDatetime, [
+            '۰'=>'0','۱'=>'1','۲'=>'2','۳'=>'3','۴'=>'4','۵'=>'5','۶'=>'6','۷'=>'7','۸'=>'8','۹'=>'9'
+        ]);
+
+        // 2. جایگزینی / با -
+        $persianDatetime = str_replace('/', '-', $persianDatetime);
+
+        // 3. explode برای گرفتن سال، ماه، روز
+        list($jy, $jm, $jd) = explode('-', $persianDatetime);
+
+        // 4. تبدیل شمسی به میلادی
+        list($gy, $gm, $gd) = jalali_to_gregorian($jy, $jm, $jd);
+        $gregorianDate = sprintf("%04d-%02d-%02d", $gy, $gm, $gd);
+
+        // آماده سازی آرایه برای update
         $update_data = [
             'title' => $this->input->post('title'),
             'amount' => $this->input->post('amount'),
             'type' => $this->input->post('type'),
             'category_id' => $this->input->post('category_id'),
-            'transaction_date' => $this->input->post('transaction_date'),
+            'transaction_date' => $gregorianDate, // اکنون میلادی است
         ];
+
+        log_message("debug", "Update data: " . print_r($update_data, true));
 
         $this->transactions_model->update($id, $update_data);
         redirect('transactions');
-    }
+}
+
 
     /** حذف تراکنش */
     public function delete($id) {

@@ -1,27 +1,4 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پروفایل کاربری</title>
 
-    <!-- Bootstrap RTL -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.4.0/css/bootstrap-rtl.min.css" rel="stylesheet">
-
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f8f9fa;
-            direction: rtl;
-            text-align: right;
-            font-family: "Vazirmatn", sans-serif;
-        }
-    </style>
-</head>
-
-<body>
 
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -121,10 +98,10 @@
                         </form>
                     </div>
 
-                    <!-- خروج -->
-                    <!-- <div class="text-center">
+                    <!-- خروج 
+                    <div class="text-center">
                         <a href="<?= site_url('auth/logout'); ?>" class="btn btn-danger">خروج از حساب</a>
-                    </div> -->
+                    </div>-->
 
                 </div>
             </div>
@@ -133,8 +110,6 @@
     </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
-</html>
+
+

@@ -5,86 +5,111 @@ class Transactionscategories extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-        $this->load->model('Transaction_category_model');
-        $this->load->library(['pagination','form_validation','session']);
-        $this->load->helper(['url','form']);
-        if (!$this->session->userdata('logged_in')) {
-            redirect('auth/signup');
-        }
+
+        $this->load->model('Transaction_category_model', 'transaction_category_model');
+        $this->load->helper('url');
+        $this->load->library(['form_validation', 'pagination', 'session']);
     }
 
-    // لیست دسته‌بندی‌ها
+    /** صفحه لیست دسته‌بندی‌ها */
     public function index() {
-    $user_id = $this->session->userdata('user_id');
-    $search = $this->input->get('search', TRUE) ?? '';
-    $page = (int)$this->input->get('page');
-    $page = ($page > 0) ? $page : 1;
-    $per_page = 10;
-    $offset = ($page - 1) * $per_page;
+		$user_id = $this->session->userdata('user_id');
 
-    $total_rows = $this->Transaction_category_model->count_user_categories($user_id, $search);
+		$filters = [
+			'title' => $this->input->get('title'),
+			'user_id' => $user_id
+		];
 
-    $this->load->library('pagination');
-    $config['base_url'] = site_url('transactionscategories?search=' . urlencode($search));
-    $config['total_rows'] = $total_rows;
-    $config['per_page'] = $per_page;
-    $config['page_query_string'] = TRUE;
-    $config['query_string_segment'] = 'page';
-    $config['full_tag_open'] = '<ul class="pagination justify-content-center">';
-    $config['full_tag_close'] = '</ul>';
-    $config['cur_tag_open'] = '<li class="page-item active"><a class="page-link">';
-    $config['cur_tag_close'] = '</a></li>';
-    $config['num_tag_open'] = '<li class="page-item">';
-    $config['num_tag_close'] = '</li>';
-    $config['attributes'] = ['class'=>'page-link'];
-    $this->pagination->initialize($config);
+		// Pagination Config
+		$config['base_url'] = site_url('transactionscategories/index');
+		$config['total_rows'] = $this->transaction_category_model->count_filtered($filters);
+		$config['per_page'] = 10;
+		$config['page_query_string'] = TRUE;
+		$config['query_string_segment'] = 'page';
+		$config['use_page_numbers'] = TRUE;
 
-    $data['transactions'] = $this->Transaction_category_model->get_user_categories($user_id, $per_page, $offset, $search);
-    $data['search'] = $search;
-    $data['pagination'] = $this->pagination->create_links();
+		// Bootstrap Pagination style
+		$config['full_tag_open']  = '<ul class="pagination justify-content-center">';
+		$config['full_tag_close'] = '</ul>';
+		$config['num_tag_open']   = '<li class="page-item">';
+		$config['num_tag_close']  = '</li>';
+		$config['cur_tag_open']   = '<li class="page-item active"><a class="page-link">';
+		$config['cur_tag_close']  = '</a></li>';
+		$config['attributes']     = ['class' => 'page-link'];
 
-    $this->load->view('transactions_list', $data);
+		$this->pagination->initialize($config);
+
+		$page = $this->input->get('page');
+		$page = ($page) ? $page : 1;
+		$offset = ($page - 1) * $config['per_page'];
+
+		// Fetch categories
+		$data['categories'] = $this->transaction_category_model->get_filtered_paginated(
+			$filters,
+			$config['per_page'],
+			$offset
+		);
+
+		$data['filters'] = $filters;
+		$data['pagination'] = $this->pagination->create_links();
+
+		// اگر AJAX باشد
+		if ($this->input->is_ajax_request()) {
+			$this->load->view('categories/index', $data);
+			return;
+		}
+
+		// Load view عادی
+		$this->load->view('categories/index', $data);
 }
 
 
-    // افزودن دسته‌بندی
-    public function add() {
-        $this->form_validation->set_rules('title','عنوان','required');
+    /** صفحه ایجاد */
+    public function create() {
 
-        if($this->form_validation->run() === TRUE) {
-            $data = [
-                'title' => $this->input->post('title'),
-                'user_id' => $this->session->userdata('user_id')
-            ];
-            $this->Transaction_category_model->insert_category($data);
-            redirect('transactionscategories');
+        $this->form_validation->set_rules('title', 'عنوان', 'required');
+
+        if ($this->form_validation->run() === FALSE) {
+            return $this->load->view('categories/create');
         }
 
-        $this->load->view('transaction_form',['action'=>'add','title'=>'']);
+        $insert_data = [
+            'title'   => $this->input->post('title'),
+            'user_id' => $this->session->userdata('user_id')
+        ];
+
+        $this->transaction_category_model->insert($insert_data);
+
+        redirect('transactionscategories');
     }
 
-    // ویرایش دسته‌بندی
+    /** صفحه ویرایش */
     public function edit($id) {
-        $category = $this->Transaction_category_model->get_category($id);
-        if(!$category || $category->user_id != $this->session->userdata('user_id')) show_404();
 
-        $this->form_validation->set_rules('title','عنوان','required');
+        $data['category'] = $this->transaction_category_model->get_by_id($id);
 
-        if($this->form_validation->run() === TRUE) {
-            $data = ['title'=>$this->input->post('title')];
-            $this->Transaction_category_model->update_category($id,$data);
-            redirect('transactionscategories');
+        if (!$data['category']) {
+            show_404();
         }
 
-        $this->load->view('transaction_form',['action'=>'edit','title'=>$category->title,'id'=>$category->id]);
+        $this->form_validation->set_rules('title', 'عنوان', 'required');
+
+        if ($this->form_validation->run() === FALSE) {
+            return $this->load->view('categories/edit', $data);
+        }
+
+        $update_data = [
+            'title' => $this->input->post('title'),
+        ];
+
+        $this->transaction_category_model->update($id, $update_data);
+
+        redirect('transactionscategories');
     }
 
-    // حذف دسته‌بندی
+    /** حذف */
     public function delete($id) {
-        $category = $this->Transaction_category_model->get_category($id);
-        if($category && $category->user_id == $this->session->userdata('user_id')) {
-            $this->Transaction_category_model->delete_category($id);
-        }
+        $this->transaction_category_model->delete($id);
         redirect('transactionscategories');
     }
 }

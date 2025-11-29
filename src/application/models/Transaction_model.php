@@ -97,4 +97,58 @@ class Transaction_model extends CI_Model {
 		return $this->db->get()->result();
 }
 
+
+    /** جمع کل درآمدهای یک کاربر */
+    public function get_total_income($user_id)
+    {
+        return $this->db->select_sum('amount')
+            ->from('transactions')
+            ->where('user_id', $user_id)
+            ->where('type', 'income')
+            ->get()
+            ->row()
+            ->amount ?? 0;
+    }
+
+    /** جمع کل هزینه‌های یک کاربر */
+    public function get_total_expense($user_id)
+    {
+        return $this->db->select_sum('amount')
+            ->from('transactions')
+            ->where('user_id', $user_id)
+            ->where('type', 'expense')
+            ->get()
+            ->row()
+            ->amount ?? 0;
+    }
+
+    /** موجودی فعلی = درآمد - هزینه */
+    public function get_balance($user_id)
+    {
+        $income  = $this->get_total_income($user_id);
+        $expense = $this->get_total_expense($user_id);
+        return $income - $expense;
+    }
+
+
+    /** نمودار درآمد و هزینه ماهانه */
+/** نمودار درآمد و هزینه ماهانه */
+public function get_monthly_summary($user_id)
+{
+    return $this->db->select("
+            DATE_FORMAT(transaction_date, '%Y-%m') AS month,
+            SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS total_income,
+            SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS total_expense
+        ")
+        ->from("transactions")
+        ->where("user_id", $user_id)
+        ->group_by("DATE_FORMAT(transaction_date, '%Y-%m')")
+        ->order_by("month", "ASC")
+        ->get()
+        ->result();
+}
+
+
+
+
 }

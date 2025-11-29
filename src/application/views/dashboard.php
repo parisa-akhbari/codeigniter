@@ -82,10 +82,10 @@ body {
 <div class="sidebar">
     <h3>پنل کاربری</h3>
 
-    <a class="menu-item active" data-page="home">🏠 داشبورد</a>
-    <a class="menu-item" data-page="profile">👤 پروفایل</a>
-    <a class="menu-item" data-page="transactions">⚙️ تراکنش ها</a>
-    <a class="menu-item" data-page="categories">✉️ دسته بندی ها</a>
+    <a class="menu-item active" data-url="<?= site_url('dashboard/home_ajax'); ?>">🏠 داشبورد</a>
+	<a class="menu-item" data-url="<?= site_url('dashboard/profile_ajax'); ?>">👤 پروفایل</a>
+	<a class="menu-item" data-url="<?= site_url('transactions'); ?>">⚙️ تراکنش ها</a>
+	<a class="menu-item" data-url="<?= site_url('transactionscategories'); ?>">✉️ دسته بندی ها</a>
 
     <a class="logout" href="<?php echo site_url('Auth/logout'); ?>">🚪 خروج</a>
 </div>
@@ -103,8 +103,42 @@ body {
     <!-- Dynamic Content Box -->
     <div id="content-area">
         <!-- محتوای اولیه -->
-        <h2>داشبورد</h2>
-        <p>در این بخش می‌تونی گزارش‌ها و بخش‌های مختلف را ببینی.</p>
+        <!-- <h2>داشبورد</h2>
+        <p>در این بخش می‌تونی گزارش‌ها و بخش‌های مختلف را ببینی.</p> -->
+        <div class="container">
+
+            <h2 class="mb-4">خلاصه وضعیت مالی</h2>
+
+            <div class="row">
+
+                <!-- درآمد -->
+                <div class="col-md-4">
+                    <div class="p-3 text-center bg-success text-white rounded shadow-sm">
+                        <h4>کل درآمد</h4>
+                        <h2><?= number_format($total_income); ?> تومان</h2>
+                    </div>
+                </div>
+
+                <!-- هزینه -->
+                <div class="col-md-4">
+                    <div class="p-3 text-center bg-danger text-white rounded shadow-sm">
+                        <h4>کل هزینه</h4>
+                        <h2><?= number_format($total_expense); ?> تومان</h2>
+                    </div>
+                </div>
+
+                <!-- موجودی -->
+                <div class="col-md-4">
+                    <div class="p-3 text-center bg-primary text-white rounded shadow-sm">
+                        <h4>موجودی فعلی</h4>
+                        <h2><?= number_format($balance); ?> تومان</h2>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
 </div>
@@ -117,13 +151,14 @@ $(document).ready(function(){
     /** =======================
      * بارگذاری صفحات منو با AJAX
      * ======================= */
-    $(".menu-item").click(function(){
-        $(".menu-item").removeClass("active");
-        $(this).addClass("active");
+    $(".menu-item").click(function() {
+    $(".menu-item").removeClass("active");
+    $(this).addClass("active");
 
-        let page = $(this).data("page");
-        loadPage("<?= site_url('Dashboard/load_page'); ?>/" + page);
-    });
+    let url = $(this).data("url");
+    loadPage(url);
+});
+
 
     /** =======================
      * تابع loadPage
@@ -195,5 +230,9 @@ $(document).ready(function(){
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+
+
 </body>
 </html>

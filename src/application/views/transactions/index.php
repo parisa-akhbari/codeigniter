@@ -16,7 +16,7 @@
     <a href="<?= site_url('transactions/create') ?>" class="btn btn-primary mb-3 ajax-link">افزودن تراکنش جدید</a>
 
     <!-- فرم جستجو -->
-    <form method="GET" class="mb-4 ajax-form" action="<?= site_url('Dashboard/load_page/transactions'); ?>">
+    <form method="GET" class="mb-4 ajax-form" action="<?= site_url('transactions/index'); ?>">
     <div class="form-row">
         <div class="col-md-3 mb-2">
             <input type="text" name="title" class="form-control" placeholder="عنوان" value="<?= $filters['title'] ?? '' ?>">
@@ -36,10 +36,10 @@
         </div>
         <div class="col-md-3 mb-2 d-flex">
             <button type="submit" class="btn btn-primary mr-2">جستجو</button>
-            <a href="<?= site_url('transactions') ?>" class="btn btn-secondary ajax-link">پاک کردن</a>
+            <a href="<?= site_url('transactions/index') ?>" class="btn btn-secondary ajax-link">پاک کردن</a>
         </div>
     </div>
-    </form>
+</form>
 
 
     <!-- جدول تراکنش‌ها -->
@@ -63,7 +63,20 @@
                         <td><?= number_format($t->amount) ?></td>
                         <td><?= $t->type == 'income' ? 'درآمد' : 'هزینه' ?></td>
                         <td><?= $t->category_title ?></td>
-                        <td><?= $t->transaction_date ?></td>
+                        <td>
+                            <?php 
+                                if(!empty($t->transaction_date)) {
+                                    $parts = explode('-', $t->transaction_date);
+                                    if(count($parts) === 3){
+                                        $gy = (int)$parts[0];
+                                        $gm = (int)$parts[1];
+                                        $gd = (int)$parts[2];
+                                        list($jy, $jm, $jd) = gregorian_to_jalali($gy, $gm, $gd);
+                                        echo sprintf("%04d/%02d/%02d", $jy, $jm, $jd);
+                                    }
+                                }
+                            ?>
+                        </td>
                         <td>
                         <a href="<?= site_url('transactions/edit/'.$t->id) ?>" class="btn btn-sm btn-warning ajax-link">ویرایش</a>
                         <a href="<?= site_url('transactions/delete/'.$t->id) ?>" 
