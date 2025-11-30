@@ -23,22 +23,40 @@ class Profile extends CI_Controller {
     }
 
     public function update_name() {
-        $this->form_validation->set_rules('username', 'username', 'required|min_length[3]');
+
+        // قانون اعتبارسنجی
+        $this->form_validation->set_rules('username', 'نام کاربری', 'required|alpha_numeric|is_unique[users.username]|min_length[3]', [
+        'required' => 'فیلد {field} الزامی است.',
+        'is_unique' => 'این {field} قبلاً ثبت شده است.',
+        'alpha_numeric' => '{field} می‌تواند شامل حروف و اعداد باشد.',
+        'min_length' => '{field} باید حداقل 4 کاراکتر باشد.']);
 
         if ($this->form_validation->run() == FALSE) {
-            $this->index();
+            $this->session->set_flashdata('error', validation_errors());
+            redirect('profile');
         } else {
             $user_id = $this->session->userdata('user_id');
             $this->User_model->update_user($user_id, ['username' => $this->input->post('username', true)]);
             $this->session->set_flashdata('message', 'نام با موفقیت تغییر کرد.');
             redirect('profile');
         }
-    }
+}
+
+    
 
     public function update_password() {
-        $this->form_validation->set_rules('current_password', 'Current Password', 'required');
-        $this->form_validation->set_rules('new_password', 'New Password', 'required|min_length[6]');
-        $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|matches[new_password]');
+        $this->form_validation->set_rules('current_password', 'پسورد قبلی', 'required|min_length[6]', [
+        'required' => 'فیلد {field} الزامی است.',
+        'min_length' => '{field} باید حداقل 6 کاراکتر باشد.'
+    ]);
+        $this->form_validation->set_rules('new_password', 'پسورد جدید', 'required|min_length[6]', [
+        'required' => 'فیلد {field} الزامی است.',
+        'min_length' => '{field} باید حداقل 6 کاراکتر باشد.'
+    ]);
+        $this->form_validation->set_rules('confirm_password', 'تایید پسورد', 'required|matches[new_password]', [
+        'required' => 'فیلد {field} الزامی است.',
+        'matches' => '{field} با رمز عبورجدید مطابقت ندارد.'
+    ]);
 
         $user_id = $this->session->userdata('user_id');
         $user = $this->User_model->get_user_by_id($user_id);

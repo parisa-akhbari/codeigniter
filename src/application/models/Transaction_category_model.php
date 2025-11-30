@@ -10,21 +10,18 @@ class Transaction_category_model extends CI_Model {
     }
 	
 	public function get_all() {
-        return $this->db
-            ->select('transaction_categories.*')
-            ->from($this->table)
-            ->get()
-            ->result();
+        return $this->db->select('transaction_categories.*')->from($this->table)->get()->result();
     }
 
     public function get_by_id($id) {
-        return $this->db
-            ->select('transaction_categories.*')
-            ->from($this->table)
-            ->where('transaction_categories.id', $id)
-            ->get()
-            ->row();
+        return $this->db->select('transaction_categories.*')->from($this->table)->where('transaction_categories.id', $id)->get()->row();
     }
+
+    
+    public function get_by_user($user_id) {
+        return $this->db->select('*')->from($this->table)->where('user_id', $user_id)->get()->result();
+    }
+
 
     public function insert(array $data) {
         return $this->db->insert($this->table, $data);

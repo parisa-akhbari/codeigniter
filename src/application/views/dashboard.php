@@ -5,12 +5,16 @@
 <title>داشبورد کاربر - داینامیک</title>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-rtl/3.4.0/css/bootstrap-rtl.min.css" rel="stylesheet">
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- لینک فونت فارسی Vazir -->
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@30.1.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+
+    
 <style>
 body {
     margin: 0;
-    font-family: 'IRANSans', sans-serif;
+    font-family: 'Vazir', IRANSans, sans-serif !important;
     direction: rtl;
     background: #f5f6fa;
 }
@@ -139,6 +143,12 @@ body {
 
         </div>
 
+        <br><br>
+
+        <h3 class="mt-4">نمودار میله‌ای درآمد و هزینه ماهانه</h3>
+
+        <canvas id="incomeExpenseChart" style="max-height:350px;"></canvas>
+
     </div>
 
 </div>
@@ -224,14 +234,70 @@ $(document).ready(function(){
 });
 
 
-
-
 </script>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
+<script>
+function toPersianDigits(num) {
+    return num.toString().replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+}
+
+$(document).ready(function(){
+
+    $.get("<?= site_url('dashboard/chart_data'); ?>", function(data){
+
+        let chartData = JSON.parse(data);
+
+        const ctx = document.getElementById('incomeExpenseChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [
+                    {
+                        label: 'درآمد',
+                        data: chartData.income,
+                        borderColor: 'green',
+                        fill: false,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'هزینه',
+                        data: chartData.expense,
+                        borderColor: 'red',
+                        fill: false,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { font: { size: 14 } }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return toPersianDigits(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    });
+
+});
+</script>
 
 
 </body>

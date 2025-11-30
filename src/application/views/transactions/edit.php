@@ -76,46 +76,37 @@
     </div>
 
 
-
-
-
         <button type="submit" class="btn btn-success">ذخیره تغییرات</button>
         <a href="<?= site_url('transactions') ?>" class="btn btn-secondary ajax-link">بازگشت</a>
     </form>
 </div>
-
 <script>
 $(document).ready(function() {
     $(".transaction-date-display").each(function() {
         var $display = $(this);
         var $hidden = $display.siblings(".transaction-date");
+
+        // مقدار شمسی که PHP تبدیل کرده
         var existingShamsi = $display.val();
 
         $display.persianDatepicker({
             format: 'YYYY/MM/DD',
             autoClose: true,
             observer: true,
-            initialValue: false,
+            //initialValue: !!existingShamsi,  // فعال فقط وقتی مقدار موجود باشد
+            initialValueType: 'persian',
+			initialValue: true,
             calendarType: 'persian',
             altField: $hidden,
-            altFormat: 'YYYY-MM-DD'
+            altFormat: 'YYYY-MM-DD',
+            onInit: function() {
+                if(existingShamsi){
+                    $display.val(existingShamsi);
+                }
+            }
         });
-
-        if(existingShamsi) {
-            var pd = $display.data('datepicker');
-            pd.setDate(existingShamsi);
-        }
     });
 });
-
-
-
-</script>
-
-
-
-
-
 
 </script>
 </body>

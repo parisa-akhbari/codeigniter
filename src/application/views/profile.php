@@ -62,16 +62,19 @@
                             <div class="col-12">
                                 <input type="password" name="current_password" class="form-control"
                                        placeholder="رمز فعلی" required>
+                                <?= form_error('current_password', '<small class="text-danger">', '</small>'); ?>
                             </div>
 
                             <div class="col-12">
                                 <input type="password" name="new_password" class="form-control"
                                        placeholder="رمز جدید" required>
+                                <?= form_error('new_password', '<small class="text-danger">', '</small>'); ?>
                             </div>
 
                             <div class="col-12">
                                 <input type="password" name="confirm_password" class="form-control"
                                        placeholder="تکرار رمز جدید" required>
+                                <?= form_error('confirm_password', '<small class="text-danger">', '</small>'); ?>
                             </div>
 
                             <div class="col-12">
@@ -88,7 +91,11 @@
                               enctype="multipart/form-data" class="row g-2">
 
                             <div class="col-9">
-                                <input type="file" name="profile_image" class="form-control" required>
+                                <label class="form-control btn btn-outline-secondary w-100 text-start" for="profile_image">
+                                    انتخاب فایل
+                                </label>
+                                 <input type="file" name="profile_image" id="profile_image" class="d-none" required>
+                                <!-- <input type="file" name="profile_image" class="form-control" required> -->
                             </div>
 
                             <div class="col-3">

@@ -69,28 +69,37 @@ class Dashboard extends CI_Controller {
 		$this->load->view("dashboard", $data);
 	 }
 
-public function chart_data()
+	public function chart_data()
 {
-    $user_id = $this->session->userdata('user_id');
-    $monthly = $this->Transaction_model->get_monthly_summary($user_id);
+		$this->load->helper('jdf');
 
-    $labels = [];
-    $income = [];
-    $expense = [];
+		$user_id = $this->session->userdata('user_id');
+		$monthly = $this->Transaction_model->get_monthly_summary($user_id);
 
-    foreach ($monthly as $m) {
-        $labels[]  = $m->month;
-        $income[]  = (int)$m->total_income;
-        $expense[] = (int)$m->total_expense;
-    }
+		$labels = [];
+		$income = [];
+		$expense = [];
 
-    echo json_encode([
-        "labels" => $labels,
-        "income" => $income,
-        "expense" => $expense
-    ]);
-}
+		foreach ($monthly as $m) {
+
+			// فرض: مقدار month مثل "2024-01" یا "2024-1" است
+			$gregorian_date = $m->month . "-01"; // تبدیل به یک تاریخ کامل
+
+			// تبدیل به شمسی
+			$jalali_label = jdate("Y/m", strtotime($gregorian_date));
+
+			$labels[]  = $jalali_label;
+			$income[]  = (int)$m->total_income;
+			$expense[] = (int)$m->total_expense;
+		}
+
+		echo json_encode([
+			"labels" => $labels,
+			"income" => $income,
+			"expense" => $expense
+		]);
+	}
 
 
-
+	
 }

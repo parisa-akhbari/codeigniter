@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>فرم ورود / ثبت‌نام</title>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+<!-- لینک فونت فارسی Vazir -->
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@30.1.0/dist/font-face.css" rel="stylesheet" type="text/css" />
 <style>
-html, body * { box-sizing: border-box; font-family: 'Open Sans', sans-serif; direction: rtl; }
+html, body * { box-sizing: border-box; font-family: 'Vazir', IRANSans, sans-serif !important; direction: rtl; }
 
 body {
   background:

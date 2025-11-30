@@ -40,6 +40,10 @@
 
 
 <script>
+function toPersianDigits(num) {
+    return num.toString().replace(/\d/g, d => "۰۱۲۳۴۵۶۷۸۹"[d]);
+}
+
 $(document).ready(function(){
 
     $.get("<?= site_url('dashboard/chart_data'); ?>", function(data){
@@ -71,9 +75,20 @@ $(document).ready(function(){
             },
             options: {
                 responsive: true,
-                plugins: { legend: { labels: { font: { size: 14 } } } },
+                plugins: {
+                    legend: {
+                        labels: { font: { size: 14 } }
+                    }
+                },
                 scales: {
-                    y: { beginAtZero: true }
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return toPersianDigits(value);
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -82,6 +97,8 @@ $(document).ready(function(){
 
 });
 </script>
+
+
 
 
 
